@@ -53,7 +53,7 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
             int year = [MovieDbKit getYearFromStringDate:releaseDate];
             if(year >= fromYear && year <= toYear)
             {
-                NSLog(@"title: %@, release date: %@", elem[@"title"], releaseDate);
+                //NSLog(@"title: %@, release date: %@", elem[@"title"], releaseDate);
                 [listResults addObject:elem];
             }
         }
@@ -66,6 +66,8 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
                                     : (int)toYear
 {
     NSLog(@"retrieveAllMovies called");
+    // TODO: Improve by multi-threading / asynchronous
+    // TODO: Improve by caching result locally and get only by day.
     NSMutableArray *listResults = [[NSMutableArray alloc] init];
     int page = 1;
     int totalPages = 1;
@@ -180,7 +182,7 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
         return nil;
     }
     
-    NSString *resultString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    //NSString *resultString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     //NSLog(@"resultString : %@", resultString);
     
     return responseData;

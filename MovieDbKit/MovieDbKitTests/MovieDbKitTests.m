@@ -81,6 +81,18 @@
 - (void)testRetrieveTop10
 {
     NSMutableArray *results = [MovieDbKit retrieveTop10Movies:2017 :2018];
+    unsigned long size = [results count];
+    for(unsigned long i=0; i<size; ++i)
+    {
+        id elem = results[i];
+        if(elem != nil)
+        {
+            NSLog(@"Title: %@\nRelease Date: %@\nRating: %g",
+                  elem[@"title"],
+                  elem[@"release_date"],
+                  [elem[@"vote_average"] floatValue]);
+        }
+    }
     XCTAssertTrue([results count] <= 10);
 }
 
