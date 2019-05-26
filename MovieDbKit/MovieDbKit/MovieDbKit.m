@@ -72,7 +72,6 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
 {
     NSLog(@"retrieveAllMovies called");
     // TODO: Improve by multi-threading / asynchronous
-    // TODO: Improve by caching result locally and get only by day.
     NSMutableArray *listResults = [[NSMutableArray alloc] init];
     int page = 1;
     int totalPages = 1;
@@ -93,7 +92,18 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
                                       : (int)toYear
 {
     NSLog(@"retrieveTop10Movies called");
-    NSMutableArray *listResults = [MovieDbKit retrieveAllMovies:fromYear :toYear];
+    
+    // this is the slow version
+    // this basically tries to retrieve all movies in 2017-2018 in all pages.
+    // Executing this will take a minutes!!! But the requirement of the test is
+    // to retrieve all movies in 2017-2018 and then pass to C sorter.
+    NSMutableArray *listResults = [self retrieveAllMovies:fromYear :toYear];
+    
+    // this is faster (intentionally commented)
+    // since the REST api used already returns the top rated movies in 2017-2018 sorted
+    // by popularity, we only need the first page of 20 results.
+//    NSMutableArray *listResults = [self retrieveAllMoviesByPage:1 :2017 :2018 :nil];
+    
     if(listResults == nil)
     {
         return nil;
@@ -105,6 +115,8 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
         return nil;
     }
     
+    // Part where results are sorted via C static library function. Totally unnecessary
+    // since the REST query is already sorted, but this is a requirement of the test...
     NSMutableArray *topTen = [[NSMutableArray alloc] init];
     ListEntry_t * cArrayOfListEntry = malloc(resultsCount * sizeof(ListEntry_t));
     if( cArrayOfListEntry != 0 )
@@ -186,9 +198,6 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
         NSLog(@"Error getting %@, HTTP status code %ld", apiURL, [response statusCode]);
         return nil;
     }
-    
-    //NSString *resultString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-    //NSLog(@"resultString : %@", resultString);
     
     return responseData;
 }
