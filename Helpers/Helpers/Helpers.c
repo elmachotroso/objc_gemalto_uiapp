@@ -14,7 +14,7 @@ static int Comparer_AscendingRating(const void *a, const void *b);
 static int Comparer_DescendingRating(const void *a, const void *b);
 
 /// Public API
-void SortMoviesByRating(ListEntry_t *list, size_t listCount, bool ascending)
+void Helpers_SortMoviesByRating(ListEntry_t *list, size_t listCount, bool ascending)
 {
     if(list == 0
        || listCount < 2)

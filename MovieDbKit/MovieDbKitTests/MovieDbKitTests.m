@@ -48,14 +48,14 @@
         NSLog(@"Element %f", listingEntries[i].rating);
     }
     
-    SortMoviesByRating(listingEntries, size, false);
+    Helpers_SortMoviesByRating(listingEntries, size, false);
     NSLog(@">>>>> AFTER SORTING DESCENDING");
     for(int i=0; i<size; ++i)
     {
         NSLog(@"Element %f", listingEntries[i].rating);
     }
     
-    SortMoviesByRating(listingEntries, size, true);
+    Helpers_SortMoviesByRating(listingEntries, size, true);
     NSLog(@">>>>> AFTER SORTING ASCENDING");
     for(int i=0; i<size; ++i)
     {

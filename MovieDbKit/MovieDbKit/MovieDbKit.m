@@ -12,6 +12,7 @@
 
 /// Constants
 // TODO: change to a more hidden and secure way later
+NSString *const tMDBApiDiscover = @"https://api.themoviedb.org/3/discover/movie";
 NSString *const tMDBApiKey = @"9dfc8731b59a33c33109e42216f8d665";
 NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZGZjODczMWI1OWEzM2MzMzEwOWU0MjIxNmY4ZDY2NSIsInN1YiI6IjVjZTgyYWI2MGUwYTI2NTIyYWQxNjQ3MCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.FAaoIgn5xA0KOw4_YiEwr9TuKmX056kSLtUN4QmYGUI";
 
@@ -30,9 +31,13 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
     NSMutableArray *listResults = [[NSMutableArray alloc] init];
     NSDictionary *params = [[NSDictionary alloc] initWithObjectsAndKeys:
                             tMDBApiKey, @"api_key",
+                            @"2017-01-01", @"primary_release_date.gte",
+                            @"2018-12-31", @"primary_release_date.lte",
+                            @"en", @"with_original_language",
+                            @"popularity.desc", @"sort_by",
                             @(page), @"page",
                             nil];
-    id result = [MovieDbKit callRESTApi:true :@"https://api.themoviedb.org/3/movie/top_rated" :params];
+    id result = [MovieDbKit callRESTApi:true :tMDBApiDiscover :params];
     if (result == nil)
     {
         return nil;
@@ -42,7 +47,7 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
     if(totalPages != nil)
     {
         *totalPages = [(result[@"total_pages"]) intValue];
-        //NSLog(@"Total Pages: %d", *totalPages);
+        NSLog(@"retrieveAllMoviesByPage total Pages: %d", *totalPages);
     }
     id resultsArray = result[@"results"];
     for(id elem in resultsArray)
@@ -107,11 +112,11 @@ NSString *const tMDBReadAccessToken = @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ
         int i = 0;
         for(i=0; i<resultsCount; ++i)
         {
-            float voteAverage = [(listResults[i][@"vote_average"]) floatValue];
+            float rating = [(listResults[i][@"popularity"]) floatValue];
             cArrayOfListEntry[i].data = (__bridge void *) listResults[i];
-            cArrayOfListEntry[i].rating = voteAverage;
+            cArrayOfListEntry[i].rating = rating;
         }
-        SortMoviesByRating(cArrayOfListEntry, resultsCount, false);
+        Helpers_SortMoviesByRating(cArrayOfListEntry, resultsCount, false);
         for(i=0; i<10 && i<resultsCount; ++i)
         {
             [topTen addObject:((__bridge id)cArrayOfListEntry[i].data)];

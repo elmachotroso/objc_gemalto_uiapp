@@ -22,7 +22,7 @@ typedef struct
     float rating;
 } ListEntry_t;
 
-void SortMoviesByRating(ListEntry_t *list, size_t listCount, bool ascending);
+void Helpers_SortMoviesByRating(ListEntry_t *list, size_t listCount, bool ascending);
     
 #ifdef __cplusplus
 }
